@@ -1,4 +1,5 @@
 import { Article, Category } from "./types";
+// Mock data for categories and articles
 
 export const CATEGORIES: Category[] = [
   {
