@@ -190,4 +190,4 @@ export const ARTICLES: Article[] = [
   },
 ];
 
-export const ADMIN_WHATSAPP = "+22870881076";
+export const ADMIN_WHATSAPP = "+22891032047";
