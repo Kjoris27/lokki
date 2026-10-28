@@ -3,8 +3,10 @@ import { Inter } from "next/font/google";
 import Link from "next/link";
 import { Dice5, MapPin, ArrowUpRight } from "lucide-react";
 import "./globals.css";
+import "./theme.css";
 import Navbar from "@/components/Navbar";
 import { ADMIN_WHATSAPP } from "@/lib/data";
+import { THEME_INIT_SCRIPT } from "@/lib/theme";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
@@ -18,7 +20,17 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${inter.variable} antialiased`}>
+    <html
+      lang="fr"
+      className={`${inter.variable} antialiased`}
+      suppressHydrationWarning
+    >
+      <head>
+        <script
+          id="lokki-theme"
+          dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
+        />
+      </head>
       <body>
         <a href="#main-content" className="skip-link">
           Aller au contenu

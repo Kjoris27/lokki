@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import PackArtwork from "@/components/PackArtwork";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -80,14 +80,11 @@ export default function HomePage() {
           <span className="hero-sticker">
             <Sparkles size={15} /> La soirée est dans la boîte.
           </span>
-          <Image
+          <PackArtwork
             src="/images/pack-hero.webp"
-            alt="Illustration 3D du pack Lokki avec Monopoly, Ludo personnalisé, Uno, Jenga et Scrabble dans une boîte bleue"
-            width={1254}
-            height={1254}
+            alt="Illustration 3D du pack Lokki avec Monopoly, Ludo personnalisé, Uno, Jenga et Scrabble"
             sizes="(max-width: 760px) 100vw, 55vw"
             preload
-            className="hero-image"
           />
           <span className="visual-note">
             <span>✦</span> De grandes revanches en perspective.
