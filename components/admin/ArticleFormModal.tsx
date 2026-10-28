@@ -4,6 +4,9 @@ import { useState } from "react";
 import { X, Plus, Trash2 } from "lucide-react";
 import { useArticleStore } from "@/lib/store";
 import { Article, UnavailablePeriod } from "@/lib/types";
+import { GAMES } from "@/lib/data";
+import { RENTAL_OFFER } from "@/lib/offer";
+import { bookingDate } from "@/lib/utils";
 
 interface Props {
   article: Article | null;
@@ -16,16 +19,26 @@ export default function ArticleFormModal({ article, onClose }: Props) {
 
   const [name, setName] = useState(article?.name ?? "");
   const [description, setDescription] = useState(article?.description ?? "");
-  const [categoryId, setCategoryId] = useState(article?.categoryId ?? categories[0]?.id ?? "");
-  const [pricePerDay, setPricePerDay] = useState(article?.pricePerDay?.toString() ?? "");
-  const [caution, setCaution] = useState(article?.conditions.caution?.toString() ?? "");
-  const [minDuration, setMinDuration] = useState(article?.conditions.minDuration?.toString() ?? "1");
-  const [notes, setNotes] = useState(article?.conditions.notes ?? "");
-  const [images, setImages] = useState<string[]>(article?.images ?? [""]);
-  const [unavailable, setUnavailable] = useState<UnavailablePeriod[]>(
-    article?.unavailablePeriods ?? []
+  const [categoryId, setCategoryId] = useState(
+    article?.categoryId ?? categories[0]?.id ?? "",
   );
-  const [status, setStatus] = useState<"active" | "inactive">(article?.status ?? "active");
+  const pricePerDay = RENTAL_OFFER.pricePerDay;
+  const [caution, setCaution] = useState(
+    article?.conditions.caution?.toString() ?? "",
+  );
+  const [minDuration, setMinDuration] = useState(
+    article?.conditions.minDuration?.toString() ?? "1",
+  );
+  const [notes, setNotes] = useState(article?.conditions.notes ?? "");
+  const [images, setImages] = useState<string[]>(
+    article?.images ?? ["/images/pack-hero.webp"],
+  );
+  const [unavailable, setUnavailable] = useState<UnavailablePeriod[]>(
+    article?.unavailablePeriods ?? [],
+  );
+  const [status, setStatus] = useState<"active" | "inactive">(
+    article?.status ?? "active",
+  );
   const [isPopular, setIsPopular] = useState(article?.isPopular ?? false);
   const [error, setError] = useState("");
 
@@ -58,30 +71,60 @@ export default function ArticleFormModal({ article, onClose }: Props) {
   }
 
   function handleSubmit() {
-    if (!name.trim() || !pricePerDay || !caution || !categoryId) {
+    if (!name.trim() || !categoryId) {
       setError("Veuillez remplir tous les champs obligatoires.");
       return;
     }
     const filledImages = images.filter((img) => img.trim());
     const badUrls = filledImages.filter((url) => {
+      if (/^\/images\/[\w/.-]+$/.test(url) && !url.includes("..")) return false;
       try {
-        return new URL(url).protocol !== "https:";
+        const imageUrl = new URL(url);
+        return (
+          imageUrl.protocol !== "https:" ||
+          imageUrl.hostname !== "images.unsplash.com"
+        );
       } catch {
         return true;
       }
     });
     if (badUrls.length > 0) {
-      setError("Les URLs d'images doivent commencer par https://");
+      setError(
+        "Utilisez une image locale /images/… ou une URL https://images.unsplash.com/…",
+      );
+      return;
+    }
+    if (
+      !Number.isInteger(Number(minDuration)) ||
+      Number(minDuration) < 1 ||
+      (caution && (!Number.isFinite(Number(caution)) || Number(caution) < 0))
+    ) {
+      setError("Vérifiez la durée minimale et la caution.");
+      return;
+    }
+    if (
+      unavailable.some(
+        (period) =>
+          !Number.isFinite(bookingDate(period.start).getTime()) ||
+          !Number.isFinite(bookingDate(period.end).getTime()) ||
+          period.end < period.start,
+      )
+    ) {
+      setError(
+        "Chaque période bloquée doit avoir une date de début et de fin valides.",
+      );
       return;
     }
     const data = {
+      kind: "game-pack" as const,
+      gameIds: GAMES.map((game) => game.id),
       name: name.trim(),
       description: description.trim(),
       categoryId,
       pricePerDay: Number(pricePerDay),
       images: filledImages,
       conditions: {
-        caution: Number(caution),
+        caution: caution === "" ? undefined : Number(caution),
         minDuration: Number(minDuration) || 1,
         notes: notes.trim() || undefined,
       },
@@ -104,33 +147,42 @@ export default function ArticleFormModal({ article, onClose }: Props) {
         {/* Header */}
         <div className="sticky top-0 bg-white border-b border-gray-100 px-5 py-4 flex items-center justify-between z-10">
           <h2 className="font-bold text-lg text-gray-900">
-            {isEdit ? "Modifier l'article" : "Nouvel article"}
+            {isEdit ? "Modifier le pack" : "Nouveau pack de jeux"}
           </h2>
-          <button onClick={onClose} className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500">
+          <button
+            onClick={onClose}
+            className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-500"
+          >
             <X size={18} />
           </button>
         </div>
 
         <div className="p-5 flex flex-col gap-5">
           {error && (
-            <div className="bg-rose-50 text-rose-600 text-sm rounded-lg px-4 py-3">{error}</div>
+            <div className="bg-rose-50 text-rose-600 text-sm rounded-lg px-4 py-3">
+              {error}
+            </div>
           )}
 
           {/* Basic */}
           <section className="flex flex-col gap-3">
-            <h3 className="text-sm font-semibold text-gray-700">Informations générales</h3>
+            <h3 className="text-sm font-semibold text-gray-700">
+              Informations générales
+            </h3>
             <div>
               <label className="text-xs text-gray-500 font-medium">Nom *</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="Ex: PlayStation 5"
+                placeholder="Ex : Le pack des bons moments"
                 className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
               />
             </div>
             <div>
-              <label className="text-xs text-gray-500 font-medium">Description</label>
+              <label className="text-xs text-gray-500 font-medium">
+                Description
+              </label>
               <textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
@@ -141,7 +193,9 @@ export default function ArticleFormModal({ article, onClose }: Props) {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs text-gray-500 font-medium">Catégorie *</label>
+                <label className="text-xs text-gray-500 font-medium">
+                  Catégorie *
+                </label>
                 <select
                   value={categoryId}
                   onChange={(e) => setCategoryId(e.target.value)}
@@ -155,11 +209,13 @@ export default function ArticleFormModal({ article, onClose }: Props) {
                 </select>
               </div>
               <div>
-                <label className="text-xs text-gray-500 font-medium">Prix / jour (FCFA) *</label>
+                <label className="text-xs text-gray-500 font-medium">
+                  Tarif habituel / 24 h (F CFA)
+                </label>
                 <input
                   type="number"
                   value={pricePerDay}
-                  onChange={(e) => setPricePerDay(e.target.value)}
+                  readOnly
                   min="0"
                   placeholder="5000"
                   className="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
@@ -170,10 +226,14 @@ export default function ArticleFormModal({ article, onClose }: Props) {
 
           {/* Conditions */}
           <section className="flex flex-col gap-3 border-t border-gray-100 pt-4">
-            <h3 className="text-sm font-semibold text-gray-700">Modalités de location</h3>
+            <h3 className="text-sm font-semibold text-gray-700">
+              Modalités de location
+            </h3>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="text-xs text-gray-500 font-medium">Caution (FCFA) *</label>
+                <label className="text-xs text-gray-500 font-medium">
+                  Caution (F CFA, facultative)
+                </label>
                 <input
                   type="number"
                   value={caution}
@@ -184,7 +244,9 @@ export default function ArticleFormModal({ article, onClose }: Props) {
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-500 font-medium">Durée min. (jours)</label>
+                <label className="text-xs text-gray-500 font-medium">
+                  Durée min. (jours)
+                </label>
                 <input
                   type="number"
                   value={minDuration}
@@ -195,7 +257,9 @@ export default function ArticleFormModal({ article, onClose }: Props) {
               </div>
             </div>
             <div>
-              <label className="text-xs text-gray-500 font-medium">Notes (optionnel)</label>
+              <label className="text-xs text-gray-500 font-medium">
+                Notes (optionnel)
+              </label>
               <input
                 type="text"
                 value={notes}
@@ -209,22 +273,30 @@ export default function ArticleFormModal({ article, onClose }: Props) {
           {/* Images */}
           <section className="flex flex-col gap-3 border-t border-gray-100 pt-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-700">Images (URLs)</h3>
-              <button onClick={addImage} className="text-xs text-indigo-600 flex items-center gap-1 hover:underline">
+              <h3 className="text-sm font-semibold text-gray-700">
+                Images (chemins ou URLs)
+              </h3>
+              <button
+                onClick={addImage}
+                className="text-xs text-indigo-600 flex items-center gap-1 hover:underline"
+              >
                 <Plus size={12} /> Ajouter
               </button>
             </div>
             {images.map((img, i) => (
               <div key={i} className="flex gap-2">
                 <input
-                  type="url"
+                  type="text"
                   value={img}
                   onChange={(e) => handleImageChange(i, e.target.value)}
                   placeholder="https://..."
                   className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
                 />
                 {images.length > 1 && (
-                  <button onClick={() => removeImage(i)} className="text-rose-400 hover:text-rose-600">
+                  <button
+                    onClick={() => removeImage(i)}
+                    className="text-rose-400 hover:text-rose-600"
+                  >
                     <Trash2 size={15} />
                   </button>
                 )}
@@ -235,8 +307,13 @@ export default function ArticleFormModal({ article, onClose }: Props) {
           {/* Unavailable periods */}
           <section className="flex flex-col gap-3 border-t border-gray-100 pt-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold text-gray-700">Périodes indisponibles</h3>
-              <button onClick={addUnavailable} className="text-xs text-indigo-600 flex items-center gap-1 hover:underline">
+              <h3 className="text-sm font-semibold text-gray-700">
+                Périodes indisponibles
+              </h3>
+              <button
+                onClick={addUnavailable}
+                className="text-xs text-indigo-600 flex items-center gap-1 hover:underline"
+              >
                 <Plus size={12} /> Ajouter
               </button>
             </div>
@@ -248,7 +325,9 @@ export default function ArticleFormModal({ article, onClose }: Props) {
                 <input
                   type="date"
                   value={u.start}
-                  onChange={(e) => updateUnavailable(i, "start", e.target.value)}
+                  onChange={(e) =>
+                    updateUnavailable(i, "start", e.target.value)
+                  }
                   className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
                 />
                 <span className="text-gray-400 text-xs">→</span>
@@ -259,7 +338,10 @@ export default function ArticleFormModal({ article, onClose }: Props) {
                   onChange={(e) => updateUnavailable(i, "end", e.target.value)}
                   className="flex-1 border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300"
                 />
-                <button onClick={() => removeUnavailable(i)} className="text-rose-400 hover:text-rose-600">
+                <button
+                  onClick={() => removeUnavailable(i)}
+                  className="text-rose-400 hover:text-rose-600"
+                >
                   <Trash2 size={14} />
                 </button>
               </div>
@@ -270,16 +352,20 @@ export default function ArticleFormModal({ article, onClose }: Props) {
           <section className="flex flex-col gap-3 border-t border-gray-100 pt-4">
             <h3 className="text-sm font-semibold text-gray-700">Paramètres</h3>
             <label className="flex items-center justify-between cursor-pointer">
-              <span className="text-sm text-gray-700">Article actif</span>
+              <span className="text-sm text-gray-700">Pack actif</span>
               <input
                 type="checkbox"
                 checked={status === "active"}
-                onChange={(e) => setStatus(e.target.checked ? "active" : "inactive")}
+                onChange={(e) =>
+                  setStatus(e.target.checked ? "active" : "inactive")
+                }
                 className="w-4 h-4 accent-indigo-600"
               />
             </label>
             <label className="flex items-center justify-between cursor-pointer">
-              <span className="text-sm text-gray-700">Marquer comme populaire</span>
+              <span className="text-sm text-gray-700">
+                Marquer comme populaire
+              </span>
               <input
                 type="checkbox"
                 checked={isPopular}
@@ -302,7 +388,7 @@ export default function ArticleFormModal({ article, onClose }: Props) {
             onClick={handleSubmit}
             className="flex-1 py-2.5 rounded-xl bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-700"
           >
-            {isEdit ? "Enregistrer" : "Créer l'article"}
+            {isEdit ? "Enregistrer" : "Créer le pack"}
           </button>
         </div>
       </div>

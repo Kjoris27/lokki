@@ -4,7 +4,8 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { Article, CartItem, Category } from "./types";
 import { ARTICLES, CATEGORIES } from "./data";
-import { calcDays, calcTotal, generateCartId } from "./utils";
+import { calcDays, calcTotal, canBook, generateCartId } from "./utils";
+import { RENTAL_OFFER } from "./offer";
 
 interface CartStore {
   items: CartItem[];
@@ -32,6 +33,7 @@ export const useCartStore = create<CartStore>()(
     (set, get) => ({
       items: [],
       addItem: (article, startDate, endDate) => {
+        if (!canBook(article, startDate, endDate)) return;
         const days = calcDays(startDate, endDate);
         const totalPrice = calcTotal(article.pricePerDay, days);
         const newItem: CartItem = {
@@ -43,7 +45,19 @@ export const useCartStore = create<CartStore>()(
           days,
           totalPrice,
         };
-        set((state) => ({ items: [...state.items, newItem] }));
+        set((state) => ({
+          items: [
+            ...state.items.filter(
+              (item) =>
+                !(
+                  item.articleId === article.id &&
+                  item.startDate === startDate &&
+                  item.endDate === endDate
+                ),
+            ),
+            newItem,
+          ],
+        }));
       },
       removeItem: (cartItemId) => {
         set((state) => ({
@@ -54,6 +68,7 @@ export const useCartStore = create<CartStore>()(
         set((state) => ({
           items: state.items.map((item) => {
             if (item.cartItemId !== cartItemId) return item;
+            if (!canBook(item.article, startDate, endDate)) return item;
             const days = calcDays(startDate, endDate);
             const totalPrice = calcTotal(item.article.pricePerDay, days);
             return { ...item, startDate, endDate, days, totalPrice };
@@ -62,10 +77,19 @@ export const useCartStore = create<CartStore>()(
       },
       clearCart: () => set({ items: [] }),
       totalAmount: () =>
-        get().items.reduce((sum, item) => sum + item.totalPrice, 0),
+        get().items.reduce(
+          (sum, item) => sum + calcTotal(item.article.pricePerDay, item.days),
+          0,
+        ),
     }),
-    { name: "stuffrental-cart" }
-  )
+    {
+      name: "stuffrental-cart",
+      version: 1,
+      // Legacy equipment carts cannot be converted to exact 24-hour rentals.
+      migrate: () => ({ items: [] }),
+      partialize: (state) => ({ items: state.items }),
+    },
+  ),
 );
 
 export const useArticleStore = create<ArticleStore>()(
@@ -76,6 +100,8 @@ export const useArticleStore = create<ArticleStore>()(
       addArticle: (data) => {
         const article: Article = {
           ...data,
+          kind: "game-pack",
+          pricePerDay: RENTAL_OFFER.pricePerDay,
           id: `art-${Date.now()}`,
           createdAt: new Date().toISOString(),
         };
@@ -84,7 +110,14 @@ export const useArticleStore = create<ArticleStore>()(
       updateArticle: (id, data) => {
         set((state) => ({
           articles: state.articles.map((a) =>
-            a.id === id ? { ...a, ...data } : a
+            a.id === id
+              ? {
+                  ...a,
+                  ...data,
+                  kind: "game-pack",
+                  pricePerDay: RENTAL_OFFER.pricePerDay,
+                }
+              : a,
           ),
         }));
       },
@@ -98,7 +131,7 @@ export const useArticleStore = create<ArticleStore>()(
           articles: state.articles.map((a) =>
             a.id === id
               ? { ...a, status: a.status === "active" ? "inactive" : "active" }
-              : a
+              : a,
           ),
         }));
       },
@@ -112,7 +145,7 @@ export const useArticleStore = create<ArticleStore>()(
       updateCategory: (id, data) => {
         set((state) => ({
           categories: state.categories.map((c) =>
-            c.id === id ? { ...c, ...data } : c
+            c.id === id ? { ...c, ...data } : c,
           ),
         }));
       },
@@ -124,21 +157,23 @@ export const useArticleStore = create<ArticleStore>()(
     }),
     {
       name: "stuffrental-admin-v2",
-      version: 2,
+      version: 3,
       migrate: (persistedState, version) => {
-        if (!version || version < 2) {
-          const s = persistedState as { articles: Article[]; categories: Category[] };
+        if (version < 3) {
+          const s = persistedState as { articles?: Article[] } | undefined;
+          const packs =
+            s?.articles?.filter((article) => article.kind === "game-pack") ??
+            [];
           return {
-            ...s,
-            articles: s.articles.map((a) => {
-              const seed = ARTICLES.find((seed) => seed.id === a.id);
-              if (seed) return { ...a, images: seed.images, isPopular: seed.isPopular };
-              return a;
-            }),
+            articles: packs.length ? packs : ARTICLES,
+            categories: CATEGORIES,
           };
         }
-        return persistedState as { articles: Article[]; categories: Category[] };
+        return persistedState as {
+          articles: Article[];
+          categories: Category[];
+        };
       },
-    }
-  )
+    },
+  ),
 );

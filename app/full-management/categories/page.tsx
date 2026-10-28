@@ -24,7 +24,9 @@ export default function AdminCategoriesPage() {
   function handleDelete(id: string) {
     const hasArticles = articles.some((a) => a.categoryId === id);
     if (hasArticles) {
-      globalThis.alert("Impossible de supprimer : des articles utilisent cette catégorie.");
+      globalThis.alert(
+        "Impossible de supprimer : des packs utilisent cette catégorie.",
+      );
       return;
     }
     if (globalThis.confirm("Supprimer cette catégorie ?")) deleteCategory(id);
@@ -46,12 +48,17 @@ export default function AdminCategoriesPage() {
         {categories.map((cat) => {
           const count = articles.filter((a) => a.categoryId === cat.id).length;
           return (
-            <div key={cat.id} className="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-4">
+            <div
+              key={cat.id}
+              className="bg-white border border-gray-100 rounded-2xl p-4 flex items-center gap-4"
+            >
               <span className="text-3xl">{cat.icon}</span>
               <div className="flex-1 min-w-0">
                 <div className="font-semibold text-gray-900">{cat.name}</div>
                 <div className="text-sm text-gray-500">{cat.description}</div>
-                <div className="text-xs text-gray-400 mt-0.5">{count} article{count === 1 ? "" : "s"}</div>
+                <div className="text-xs text-gray-400 mt-0.5">
+                  {count} pack{count === 1 ? "" : "s"}
+                </div>
               </div>
               <div className="flex items-center gap-1 shrink-0">
                 <button
@@ -73,7 +80,10 @@ export default function AdminCategoriesPage() {
       </div>
 
       {modalOpen && (
-        <CategoryFormModal category={editTarget} onClose={() => setModalOpen(false)} />
+        <CategoryFormModal
+          category={editTarget}
+          onClose={() => setModalOpen(false)}
+        />
       )}
     </div>
   );

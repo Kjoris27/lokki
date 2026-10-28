@@ -37,7 +37,7 @@ export default function AdminLoginPage() {
           <div className="bg-white/10 backdrop-blur p-3 rounded-2xl">
             <Package size={32} className="text-white" />
           </div>
-          <h1 className="text-white font-bold text-xl">StuffRental</h1>
+          <h1 className="text-white font-bold text-xl">Lokki</h1>
           <p className="text-indigo-300 text-sm">Espace administrateur</p>
         </div>
 
@@ -45,7 +45,9 @@ export default function AdminLoginPage() {
           onSubmit={handleSubmit}
           className="bg-white rounded-2xl shadow-2xl p-8 flex flex-col gap-5"
         >
-          <h2 className="text-lg font-bold text-gray-900 text-center">Connexion</h2>
+          <h2 className="text-lg font-bold text-gray-900 text-center">
+            Connexion
+          </h2>
 
           {error && (
             <div className="bg-rose-50 text-rose-600 text-sm rounded-lg px-4 py-3 text-center">
@@ -54,11 +56,17 @@ export default function AdminLoginPage() {
           )}
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="email" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="email"
+              className="text-sm font-medium text-gray-700"
+            >
               Email
             </label>
             <div className="relative">
-              <Mail size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Mail
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
               <input
                 id="email"
                 type="email"
@@ -73,11 +81,17 @@ export default function AdminLoginPage() {
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="password" className="text-sm font-medium text-gray-700">
+            <label
+              htmlFor="password"
+              className="text-sm font-medium text-gray-700"
+            >
               Mot de passe
             </label>
             <div className="relative">
-              <Lock size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+              <Lock
+                size={16}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
+              />
               <input
                 id="password"
                 type={showPwd ? "text" : "password"}

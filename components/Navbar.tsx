@@ -2,88 +2,92 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ShoppingCart, Menu, X, Package } from "lucide-react";
+import { Dice5, ShoppingBag, Menu, X, Gift, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useCartStore } from "@/lib/store";
+import { HOLIDAY_PROMOTION } from "@/lib/offer";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [menuOpen, setMenuOpen] = useState(false);
-  const items = useCartStore((s) => s.items);
-  const cartCount = items.length;
-
+  const cartCount = useCartStore((state) => state.items.length);
   const links = [
-    { href: "/", label: "Accueil" },
-    { href: "/catalogue", label: "Catalogue" },
+    { href: "/catalogue", label: "Notre pack" },
+    { href: "/#les-jeux", label: "Les jeux" },
+    { href: "/#comment-ca-marche", label: "Comment ça marche" },
   ];
-
   return (
-    <header className="sticky top-0 z-50 bg-white border-b border-gray-100 shadow-sm">
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 font-bold text-lg text-indigo-600">
-          <Package size={24} />
-          <span>StuffRental</span>
+    <>
+      {HOLIDAY_PROMOTION.enabled && (
+        <Link className="offer-banner" href="/catalogue">
+          <Gift size={15} />
+          <span>
+            Les fêtes se jouent ensemble.{" "}
+            <strong>
+              −{HOLIDAY_PROMOTION.discountPercent} % sur votre pack !
+            </strong>
+          </span>
+          <ArrowRight size={15} />
         </Link>
-
-        {/* Desktop nav */}
-        <nav className="hidden md:flex items-center gap-6">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className={`text-sm font-medium transition-colors ${
-                pathname === link.href
-                  ? "text-indigo-600"
-                  : "text-gray-600 hover:text-gray-900"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
-
-        {/* Cart + Mobile toggle */}
-        <div className="flex items-center gap-3">
-          <Link
-            href="/panier"
-            className="relative flex items-center gap-1.5 bg-indigo-600 text-white px-3 py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition-colors"
-          >
-            <ShoppingCart size={16} />
-            <span className="hidden sm:inline">Panier</span>
-            {cartCount > 0 && (
-              <span className="absolute -top-1.5 -right-1.5 bg-rose-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full font-bold">
-                {cartCount}
-              </span>
-            )}
-          </Link>
-          <button
-            className="md:hidden p-2 rounded-lg text-gray-600 hover:bg-gray-100"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label="Menu"
-          >
-            {menuOpen ? <X size={20} /> : <Menu size={20} />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile menu */}
-      {menuOpen && (
-        <div className="md:hidden border-t border-gray-100 bg-white px-4 py-3 flex flex-col gap-3">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setMenuOpen(false)}
-              className={`text-sm font-medium py-2 ${
-                pathname === link.href ? "text-indigo-600" : "text-gray-700"
-              }`}
-            >
-              {link.label}
-            </Link>
-          ))}
-        </div>
       )}
-    </header>
+      <header className="site-header">
+        <div className="shell nav-inner">
+          <Link href="/" className="brand" aria-label="Lokki — accueil">
+            <Dice5 size={30} strokeWidth={2.5} />
+            <span>
+              lokki<span className="brand-dot">.</span>
+            </span>
+          </Link>
+          <nav aria-label="Navigation principale" className="desktop-nav">
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={pathname === link.href ? "page" : undefined}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+          <div className="nav-actions">
+            <Link
+              href="/panier"
+              className="cart-link"
+              aria-label={`Ma réservation, ${cartCount} pack${cartCount > 1 ? "s" : ""}`}
+            >
+              <ShoppingBag size={18} />
+              <span>Ma réservation</span>
+              {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
+            </Link>
+            <button
+              className="mobile-toggle"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-expanded={menuOpen}
+              aria-controls="mobile-navigation"
+              aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            >
+              {menuOpen ? <X size={23} /> : <Menu size={23} />}
+            </button>
+          </div>
+        </div>
+        {menuOpen && (
+          <nav
+            id="mobile-navigation"
+            aria-label="Navigation mobile"
+            className="mobile-nav"
+          >
+            {links.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={() => setMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+        )}
+      </header>
+    </>
   );
 }

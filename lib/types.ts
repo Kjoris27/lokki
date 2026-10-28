@@ -8,7 +8,7 @@ export interface Category {
 }
 
 export interface ArticleConditions {
-  caution: number;
+  caution?: number;
   minDuration: number;
   notes?: string;
 }
@@ -20,6 +20,8 @@ export interface UnavailablePeriod {
 
 export interface Article {
   id: string;
+  kind: "game-pack";
+  gameIds: string[];
   categoryId: string;
   name: string;
   description: string;
