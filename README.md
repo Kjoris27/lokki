@@ -48,3 +48,7 @@ L’architecture existante reste locale au navigateur : Zustand et `localStorage
 Six illustrations originales sont intégrées dans `public/images/` : le pack et les cinq jeux. Les fichiers WebP individuels ont un fond transparent. Elles illustrent l’offre et ne prétendent pas photographier le stock ou le rangement réel.
 
 Voir [les prompts et chemins des visuels](docs/generated-assets.md).
+
+## Apparence
+
+Le bouton soleil/lune dans la navigation bascule entre les thèmes clair et sombre, sur mobile comme sur ordinateur. Le premier affichage suit la préférence du système ; un choix manuel est enregistré sous `lokki-theme` et conservé lors des prochaines visites. Le thème est appliqué avant le premier affichage et se synchronise entre les onglets. Les pages de réservation et l’administration partagent ce réglage. Les illustrations transparentes existantes sont utilisées pour le visuel du pack en thème sombre.

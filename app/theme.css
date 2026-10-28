@@ -1,0 +1,403 @@
+:root {
+  color-scheme: light;
+}
+.theme-toggle {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: transparent;
+  color: var(--ink);
+}
+.theme-toggle:hover {
+  background: #f3f8ff;
+  color: var(--blue);
+}
+.theme-sun {
+  display: none;
+}
+.pack-artwork {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  isolation: isolate;
+}
+.pack-artwork-fill {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  aspect-ratio: auto;
+}
+.pack-artwork-photo {
+  object-fit: contain;
+}
+.pack-artwork-night {
+  display: none;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.pack-piece {
+  position: absolute;
+  filter: drop-shadow(0 15px 12px #0006);
+}
+.pack-piece-monopoly {
+  width: 53%;
+  height: 53%;
+  left: 3%;
+  top: 8%;
+  transform: rotate(-13deg);
+  z-index: 1;
+}
+.pack-piece-jenga {
+  width: 33%;
+  height: 58%;
+  right: 16%;
+  top: 2%;
+  transform: rotate(6deg);
+  z-index: 2;
+}
+.pack-piece-ludo {
+  width: 55%;
+  height: 55%;
+  left: 3%;
+  bottom: 4%;
+  transform: rotate(-9deg);
+  z-index: 3;
+}
+.pack-piece-scrabble {
+  width: 48%;
+  height: 48%;
+  right: 3%;
+  bottom: 0;
+  transform: rotate(-8deg);
+  z-index: 4;
+}
+.pack-piece-uno {
+  width: 35%;
+  height: 43%;
+  right: 0;
+  top: 33%;
+  transform: rotate(11deg);
+  z-index: 5;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --ink: #eef3fa;
+  --muted: #a5b1c0;
+  --blue: #81adff;
+  --green: #71dba8;
+  --line: #293446;
+  --page: #080b11;
+  --surface: #111722;
+  --raised: #192332;
+  --accent-surface: #111e32;
+  --soft-green: #10261e;
+  --soft-rose: #2b1823;
+  --soft-peach: #2d2317;
+  --secondary: #bdc8d7;
+  --quiet: #98a9bc;
+  --danger: #ffa3b4;
+}
+[data-theme="dark"] body {
+  background: var(--page);
+}
+[data-theme="dark"] .site-header {
+  background: #080b11ed;
+}
+[data-theme="dark"] .site-footer {
+  background: #0c111a;
+}
+[data-theme="dark"] .theme-toggle:hover {
+  background: var(--raised);
+}
+[data-theme="dark"] .theme-moon {
+  display: none;
+}
+[data-theme="dark"] .theme-sun {
+  display: block;
+}
+[data-theme="dark"] .offer-banner {
+  background: var(--soft-green);
+  color: #a5eac4;
+}
+[data-theme="dark"] .button-primary {
+  background: #2563eb;
+  color: #fff;
+  box-shadow: 0 5px 20px #0003;
+}
+[data-theme="dark"] .button-primary:hover {
+  background: #1d4ed8;
+}
+[data-theme="dark"] .button-dark,
+[data-theme="dark"] .skip-link {
+  background: #e8eff9;
+  color: #101722;
+}
+[data-theme="dark"] .button-dark:hover {
+  background: #cdddf3;
+}
+[data-theme="dark"] .cart-count {
+  background: #2563eb;
+}
+[data-theme="dark"] .cart-link:hover {
+  background: var(--accent-surface);
+  border-color: #44648c;
+}
+[data-theme="dark"] .hero-eyebrow,
+[data-theme="dark"] .benefit-pills > span {
+  background: var(--raised);
+  color: var(--secondary);
+}
+[data-theme="dark"] .hero-sticker {
+  background: #302817;
+  border-color: #514222;
+  color: #f4d895;
+  box-shadow: 0 5px 20px #0003;
+}
+[data-theme="dark"] .pack-artwork-themed .pack-artwork-photo {
+  display: none;
+}
+[data-theme="dark"] .pack-artwork-themed .pack-artwork-night {
+  display: block;
+}
+[data-theme="dark"] .hero .pack-artwork {
+  background: radial-gradient(ellipse at 50% 50%, #15274d85, transparent 70%);
+}
+[data-theme="dark"] .game-card,
+[data-theme="dark"] .booking-panel,
+[data-theme="dark"] .checkout-panel {
+  background: var(--surface);
+  box-shadow: 0 12px 35px #0002;
+}
+[data-theme="dark"] .game-mint .game-art {
+  background: var(--soft-green);
+}
+[data-theme="dark"] .game-blue .game-art {
+  background: var(--accent-surface);
+}
+[data-theme="dark"] .game-rose .game-art {
+  background: var(--soft-rose);
+}
+[data-theme="dark"] .game-peach .game-art {
+  background: var(--soft-peach);
+}
+[data-theme="dark"] .game-lilac .game-art {
+  background: #221d35;
+}
+[data-theme="dark"] .featured-pack,
+[data-theme="dark"] .catalogue-pack-image,
+[data-theme="dark"] .pack-detail-art,
+[data-theme="dark"] .cart-item-image {
+  background: var(--accent-surface);
+  border-color: #2c4262;
+}
+[data-theme="dark"] .pack-pricing {
+  border-color: #2c4262;
+}
+[data-theme="dark"] .promo-label {
+  background: var(--soft-green);
+  color: #a5eac4;
+  border-color: #28503c;
+}
+[data-theme="dark"] .pack-checklist svg,
+[data-theme="dark"] .step-mint .step-icon {
+  color: var(--green);
+}
+[data-theme="dark"] .step-blue .step-icon,
+[data-theme="dark"] .empty-icon {
+  background: var(--accent-surface);
+}
+[data-theme="dark"] .step-mint .step-icon {
+  background: var(--soft-green);
+}
+[data-theme="dark"] .step-peach .step-icon {
+  background: var(--soft-peach);
+  color: #efc178;
+}
+[data-theme="dark"] .step-number {
+  color: #617591;
+}
+[data-theme="dark"] .last-cta {
+  background: #101f1a;
+  border-color: #284137;
+}
+[data-theme="dark"] .last-cta .eyebrow,
+[data-theme="dark"] .last-cta p {
+  color: #a1c5ad;
+}
+[data-theme="dark"] .field input,
+[data-theme="dark"] .field textarea,
+[data-theme="dark"] .field select {
+  border-color: #34435a;
+  background: #0b111b;
+  color: var(--ink);
+}
+[data-theme="dark"] .field input:focus,
+[data-theme="dark"] .field textarea:focus,
+[data-theme="dark"] .field select:focus {
+  border-color: #81adff;
+  box-shadow: 0 0 0 3px #274a784d;
+}
+[data-theme="dark"] .return-time {
+  background: var(--accent-surface);
+  color: var(--blue);
+}
+[data-theme="dark"] .return-time strong {
+  color: #cadcff;
+}
+[data-theme="dark"] .form-error {
+  background: var(--soft-rose);
+  color: var(--danger);
+}
+[data-theme="dark"] .danger {
+  color: var(--danger);
+}
+[data-theme="dark"] .text-button:hover {
+  color: #b5d0ff;
+}
+[data-theme="dark"] .icon-button {
+  background: var(--raised);
+}
+[data-theme="dark"] .icon-button:hover {
+  background: var(--soft-rose);
+}
+[data-theme="dark"] .pack-photo-note {
+  color: var(--secondary);
+  background: #0b1321de;
+}
+[data-theme="dark"] .mobile-nav a:hover {
+  background: var(--raised);
+}
+
+[data-theme="dark"]
+  :is(
+    .desktop-nav a,
+    .eyebrow,
+    .occasion-strip > div,
+    .section-heading > p strong,
+    .pack-checklist li,
+    .field label,
+    .booking-breakdown > div,
+    .mobile-nav a
+  ) {
+  color: var(--secondary);
+}
+[data-theme="dark"]
+  :is(
+    .original-price,
+    .visual-note,
+    .occasion-strip > span,
+    .game-number,
+    .game-tag,
+    .game-info p,
+    .illustration-note,
+    .pricing-note,
+    .footer-top p,
+    .footer-links a,
+    .footer-location,
+    .footer-bottom,
+    .back-link,
+    .field label span,
+    .field-help,
+    .cart-item-info p,
+    .cart-dates span,
+    .cart-assurance p
+  ) {
+  color: var(--quiet);
+}
+[data-theme="dark"] .field input::placeholder,
+[data-theme="dark"] .field textarea::placeholder {
+  color: var(--quiet);
+}
+[data-theme="dark"] .desktop-nav a[aria-current],
+[data-theme="dark"] .desktop-nav a:hover,
+[data-theme="dark"] .footer-links a:hover,
+[data-theme="dark"] .back-link:hover {
+  color: var(--blue);
+}
+[data-theme="dark"] .booking-breakdown > .discount-line {
+  color: var(--green);
+}
+[data-theme="dark"] .booking-breakdown > .booking-total {
+  color: var(--ink);
+}
+
+/* Existing admin panels and modals use Tailwind utility colors. */
+[data-theme="dark"] :is(.bg-white, .bg-gray-50) {
+  background-color: var(--surface);
+}
+[data-theme="dark"]
+  :is(.bg-gray-100, .hover\:bg-gray-100:hover, .hover\:bg-gray-50:hover) {
+  background-color: var(--raised);
+}
+[data-theme="dark"] :is(.border-gray-100, .border-gray-200) {
+  border-color: var(--line);
+}
+[data-theme="dark"] :is(.text-gray-900, .text-gray-700) {
+  color: var(--ink);
+}
+[data-theme="dark"] :is(.text-gray-600, .text-gray-500, .text-gray-400) {
+  color: var(--secondary);
+}
+[data-theme="dark"] :is(.bg-indigo-50, .bg-indigo-100, .bg-blue-100) {
+  background-color: var(--accent-surface);
+}
+[data-theme="dark"] :is(.text-indigo-600, .text-indigo-700, .text-blue-700) {
+  color: #a1bfff;
+}
+[data-theme="dark"] :is(.border-indigo-200, .border-blue-200) {
+  border-color: #36537b;
+}
+[data-theme="dark"] :is(.bg-emerald-50, .bg-emerald-100) {
+  background-color: var(--soft-green);
+}
+[data-theme="dark"] :is(.text-emerald-600, .text-emerald-700) {
+  color: var(--green);
+}
+[data-theme="dark"] .border-emerald-200 {
+  border-color: #2d5c45;
+}
+[data-theme="dark"] :is(.bg-rose-50, .bg-rose-100) {
+  background-color: var(--soft-rose);
+}
+[data-theme="dark"] :is(.text-rose-500, .text-rose-600, .text-rose-700) {
+  color: var(--danger);
+}
+[data-theme="dark"] .border-rose-200 {
+  border-color: #64404c;
+}
+[data-theme="dark"] :is(.bg-amber-50, .bg-amber-100) {
+  background-color: var(--soft-peach);
+}
+[data-theme="dark"] :is(.text-amber-600, .text-amber-700) {
+  color: #efc178;
+}
+[data-theme="dark"] .border-amber-200 {
+  border-color: #625035;
+}
+[data-theme="dark"] .bg-violet-100 {
+  background-color: #221d35;
+}
+[data-theme="dark"] .text-violet-700 {
+  color: #c9b7ff;
+}
+[data-theme="dark"] .border-violet-200 {
+  border-color: #514470;
+}
+
+@media (max-width: 600px) {
+  .nav-actions {
+    gap: 9px;
+  }
+  .theme-toggle {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+  }
+}

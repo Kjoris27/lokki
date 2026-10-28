@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import PackArtwork from "./PackArtwork";
 import { ArrowRight, Truck, Check } from "lucide-react";
 import type { Article } from "@/lib/types";
 import { GAMES } from "@/lib/data";
@@ -16,13 +16,12 @@ export default function ArticleCard({
   return (
     <article className="catalogue-pack-card">
       <div className="catalogue-pack-image">
-        <Image
+        <PackArtwork
           src={article.images[0] || "/images/pack-hero.webp"}
           alt={`Illustration de ${article.name}`}
           fill
           sizes="(max-width: 760px) 100vw, 50vw"
           preload={priority}
-          className="object-contain"
         />
         <span className="pack-photo-note">Visuel d’illustration</span>
       </div>

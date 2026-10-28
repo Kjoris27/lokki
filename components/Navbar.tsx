@@ -6,6 +6,7 @@ import { Dice5, ShoppingBag, Menu, X, Gift, ArrowRight } from "lucide-react";
 import { useState } from "react";
 import { useCartStore } from "@/lib/store";
 import { HOLIDAY_PROMOTION } from "@/lib/offer";
+import ThemeToggle from "@/components/ThemeToggle";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -50,6 +51,7 @@ export default function Navbar() {
             ))}
           </nav>
           <div className="nav-actions">
+            <ThemeToggle />
             <Link
               href="/panier"
               className="cart-link"

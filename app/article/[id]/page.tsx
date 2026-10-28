@@ -1,7 +1,7 @@
 "use client";
 
 import { use } from "react";
-import Image from "next/image";
+import PackArtwork from "@/components/PackArtwork";
 import Link from "next/link";
 import { notFound, useRouter } from "next/navigation";
 import { ArrowLeft, Check, Truck, Clock3, PackageOpen } from "lucide-react";
@@ -33,11 +33,9 @@ export default function ArticleDetailPage({
       <div className="pack-detail-grid">
         <div className="pack-detail-content">
           <div className="pack-detail-art">
-            <Image
+            <PackArtwork
               src={article.images[0] || "/images/pack-hero.webp"}
               alt={`Illustration de ${article.name}, avec les cinq jeux inclus`}
-              width={1254}
-              height={1254}
               sizes="(max-width: 800px) 100vw, 55vw"
               preload
             />
