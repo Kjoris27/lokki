@@ -11,10 +11,30 @@ export default function AdminDashboard() {
   const popular = articles.filter((a) => a.isPopular).length;
 
   const stats = [
-    { label: "Articles actifs", value: active, icon: Eye, color: "text-emerald-600 bg-emerald-50" },
-    { label: "Articles inactifs", value: inactive, icon: EyeOff, color: "text-gray-500 bg-gray-100" },
-    { label: "Articles populaires", value: popular, icon: TrendingUp, color: "text-amber-600 bg-amber-50" },
-    { label: "Catégories", value: categories.length, icon: FolderOpen, color: "text-indigo-600 bg-indigo-50" },
+    {
+      label: "Packs actifs",
+      value: active,
+      icon: Eye,
+      color: "text-emerald-600 bg-emerald-50",
+    },
+    {
+      label: "Packs inactifs",
+      value: inactive,
+      icon: EyeOff,
+      color: "text-gray-500 bg-gray-100",
+    },
+    {
+      label: "Packs populaires",
+      value: popular,
+      icon: TrendingUp,
+      color: "text-amber-600 bg-amber-50",
+    },
+    {
+      label: "Catégories",
+      value: categories.length,
+      icon: FolderOpen,
+      color: "text-indigo-600 bg-indigo-50",
+    },
   ];
 
   return (
@@ -23,8 +43,13 @@ export default function AdminDashboard() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-2">
-            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${stat.color}`}>
+          <div
+            key={stat.label}
+            className="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col gap-2"
+          >
+            <div
+              className={`w-9 h-9 rounded-xl flex items-center justify-center ${stat.color}`}
+            >
               <stat.icon size={18} />
             </div>
             <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
@@ -40,8 +65,10 @@ export default function AdminDashboard() {
         >
           <Package size={28} />
           <div>
-            <div className="font-semibold text-lg">Gérer les articles</div>
-            <div className="text-indigo-200 text-sm mt-0.5">Ajouter, modifier, supprimer</div>
+            <div className="font-semibold text-lg">Gérer les packs</div>
+            <div className="text-indigo-200 text-sm mt-0.5">
+              Ajouter, modifier, supprimer
+            </div>
           </div>
         </Link>
         <Link
@@ -51,7 +78,9 @@ export default function AdminDashboard() {
           <FolderOpen size={28} className="text-indigo-600" />
           <div>
             <div className="font-semibold text-lg">Gérer les catégories</div>
-            <div className="text-gray-500 text-sm mt-0.5">Ajouter, modifier, supprimer</div>
+            <div className="text-gray-500 text-sm mt-0.5">
+              Ajouter, modifier, supprimer
+            </div>
           </div>
         </Link>
       </div>

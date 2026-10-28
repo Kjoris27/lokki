@@ -1,36 +1,50 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lokki
 
-## Getting Started
+Location de packs de jeux à Lomé. Application Next.js 16, React 19, Tailwind CSS 4 et Zustand.
 
-First, run the development server:
+## Offre
 
-```bash
+- Un pack complet : Monopoly, Ludo personnalisé, Uno, Jenga et Scrabble. Aucun jeu ni équipement à louer séparément.
+- Tarif habituel : **7 000 F CFA par pack et par tranche de 24 h**.
+- **Livraison gratuite**.
+- Offre de fêtes activée : **−20 %, soit 5 600 F CFA pour 24 h**. La même remise s’applique aux tranches supplémentaires : 48 h = 11 200 F CFA.
+
+Le propriétaire n’a pas encore fixé de date de fin. À la fin des fêtes, passer `HOLIDAY_PROMOTION.enabled` à `false` dans `lib/offer.ts`, puis redéployer. Les affichages, récapitulatifs, paniers existants et messages WhatsApp utilisent ce réglage commun. Les dates et heures sont toujours exprimées en heure de Lomé (UTC).
+
+Les tarifs sont des montants de location. Aucune caution n’est inventée : ce champ est facultatif dans l’administration. Les modalités de restitution sont confirmées avec l’équipe.
+
+## Démarrer
+
+```sh
+npm ci
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Puis ouvrir http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```sh
+npm test
+npm run lint
+npx tsc --noEmit
+npm run build
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Node.js 20.9 ou plus récent requis par Next.js. Les tests TypeScript utilisent `tsx` via le mécanisme `--import` de Node.
 
-## Learn More
+## Parcours
 
-To learn more about Next.js, take a look at the following resources:
+Accueil → pack → date et heure de livraison → durée (jours de 24 h) → réservation → nom et adresse → WhatsApp. Le message contient les cinq jeux, la livraison et la restitution souhaitées, le tarif habituel, la remise et le total. Le client doit encore envoyer le message ; aucune réservation ni aucun paiement n’est confirmé automatiquement.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Le numéro WhatsApp existant est conservé dans `lib/data.ts`.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Les URL de catégories historiques redirigent vers le nouveau catalogue. Le stockage existant est migré : les anciens équipements sont remplacés par le pack ; les anciens paniers, dont les durées étaient calculées en jours calendaires inclusifs, sont vidés.
 
-## Deploy on Vercel
+## Données et disponibilité
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+L’architecture existante reste locale au navigateur : Zustand et `localStorage`. Les modifications de catalogue faites dans l’administration ne sont pas partagées entre appareils. Les périodes bloquées empêchent une demande sur ces dates dans ce navigateur ; elles ne constituent pas un inventaire global. La disponibilité effective et le créneau de livraison sont donc confirmés manuellement sur WhatsApp. Une base de données et une authentification serveur seraient nécessaires pour une gestion multiutilisateur.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Visuels
+
+Six illustrations originales sont intégrées dans `public/images/` : le pack et les cinq jeux. Les fichiers WebP individuels ont un fond transparent. Elles illustrent l’offre et ne prétendent pas photographier le stock ou le rangement réel.
+
+Voir [les prompts et chemins des visuels](docs/generated-assets.md).

@@ -1,151 +1,299 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Star, Zap, Search, ShoppingCart, MessageCircle } from "lucide-react";
+import {
+  ArrowRight,
+  Clock3,
+  Truck,
+  Check,
+  Gift,
+  CalendarDays,
+  MessageCircle,
+  Smile,
+  Sparkles,
+  PackageOpen,
+} from "lucide-react";
 import { useArticleStore } from "@/lib/store";
-import ArticleCard from "@/components/ArticleCard";
-import CategoryCard from "@/components/CategoryCard";
+import { HOLIDAY_PROMOTION, RENTAL_OFFER } from "@/lib/offer";
+import { GAMES } from "@/lib/data";
+import { calcTotal, formatPrice } from "@/lib/utils";
+import PriceTag from "@/components/PriceTag";
+import GameGrid from "@/components/GameGrid";
 
 export default function HomePage() {
-  const { articles, categories } = useArticleStore();
-  const activeArticles = articles.filter((a) => a.status === "active");
-  const popularArticles = activeArticles.filter((a) => a.isPopular).slice(0, 3);
-
-  const categoryCountMap = categories.reduce<Record<string, number>>((acc, cat) => {
-    acc[cat.id] = activeArticles.filter((a) => a.categoryId === cat.id).length;
-    return acc;
-  }, {});
-
+  const pack = useArticleStore((state) =>
+    state.articles.find(
+      (article) => article.kind === "game-pack" && article.status === "active",
+    ),
+  );
+  const packHref = pack ? `/article/${pack.id}` : "/catalogue";
   return (
-    <div>
-      {/* Hero */}
-      <section className="bg-gradient-to-br from-indigo-600 via-indigo-700 to-violet-700 text-white">
-        <div className="max-w-6xl mx-auto px-4 py-20 md:py-28 flex flex-col items-center text-center gap-6">
-          <div className="inline-flex items-center gap-2 bg-white/15 text-white text-sm px-4 py-1.5 rounded-full font-medium">
-            <Zap size={14} />
-            Location rapide &amp; simple
-          </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight">
-            Louez ce dont vous<br />
-            <span className="text-yellow-300">avez besoin</span>
+    <>
+      <section className="shell hero">
+        <div className="hero-copy">
+          <span className="eyebrow hero-eyebrow">
+            <span className="live-dot" /> LE BONHEUR SE JOUE ENSEMBLE
+          </span>
+          <h1>
+            Moins d’écrans.
+            <br />
+            Plus de{" "}
+            <span className="blue-text">
+              bons
+              <br className="desktop-break" /> moments.
+            </span>
           </h1>
-          <p className="text-indigo-100 text-lg md:text-xl max-w-xl">
-            PS5, sono, drones, tentes… Trouvez l&apos;article idéal et finalisez votre demande via WhatsApp.
+          <p className="hero-description">
+            Votre bande. Cinq jeux cultes. Une seule boîte.
+            <br className="desktop-break" /> On vous livre tout pour une soirée
+            qui se prolonge.
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 mt-2">
-            <Link href="/catalogue" className="bg-white text-indigo-700 font-semibold px-6 py-3 rounded-xl hover:bg-indigo-50 transition-colors flex items-center gap-2">
-              Voir le catalogue <ArrowRight size={16} />
-            </Link>
-            <Link href="/panier" className="border border-white/40 text-white font-semibold px-6 py-3 rounded-xl hover:bg-white/10 transition-colors">
-              Mon panier
-            </Link>
+          <div className="benefit-pills">
+            <span>
+              <PackageOpen size={16} /> 5 jeux inclus
+            </span>
+            <span>
+              <Clock3 size={16} /> 24 h de fun
+            </span>
+            <span>
+              <Truck size={16} /> Livraison gratuite
+            </span>
           </div>
-        </div>
-      </section>
-
-      {/* Comment ça marche */}
-      <section className="bg-white border-y border-gray-100 py-14">
-        <div className="max-w-6xl mx-auto px-4">
-          <div className="text-center mb-10">
-            <h2 className="text-2xl font-bold text-gray-900">Comment ça marche ?</h2>
-            <p className="text-gray-500 text-sm mt-2">Louer un article en 3 étapes simples</p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="relative">
-                <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-                  <Search size={28} />
-                </div>
-                <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold">1</span>
-              </div>
-              <h3 className="font-semibold text-gray-900">Parcourez le catalogue</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                Explorez nos catégories, filtrez par type d&apos;article et trouvez ce qu&apos;il vous faut en quelques secondes.
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="relative">
-                <div className="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-600">
-                  <ShoppingCart size={28} />
-                </div>
-                <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-indigo-600 text-white flex items-center justify-center text-xs font-bold">2</span>
-              </div>
-              <h3 className="font-semibold text-gray-900">Choisissez vos dates</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                Sélectionnez votre date de début et de fin. Le prix total est calculé automatiquement. Ajoutez au panier.
-              </p>
-            </div>
-            <div className="flex flex-col items-center text-center gap-3">
-              <div className="relative">
-                <div className="w-16 h-16 rounded-2xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-                  <MessageCircle size={28} />
-                </div>
-                <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs font-bold">3</span>
-              </div>
-              <h3 className="font-semibold text-gray-900">Confirmez via WhatsApp</h3>
-              <p className="text-sm text-gray-500 leading-relaxed">
-                Cliquez sur &ldquo;Conclure la demande&rdquo; — un message pré-rempli est envoyé directement à notre équipe.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Catégories */}
-      <section className="max-w-6xl mx-auto px-4 py-14">
-        <div className="flex items-end justify-between mb-6">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">Catégories</h2>
-            <p className="text-gray-500 text-sm mt-1">Trouvez par type d&apos;article</p>
-          </div>
-          <Link href="/catalogue" className="text-indigo-600 text-sm font-medium hover:underline flex items-center gap-1">
-            Tout voir <ArrowRight size={14} />
+          <Link className="button button-primary hero-cta" href={packHref}>
+            {pack ? "Je réserve mon pack" : "Découvrir les packs"}
+            <ArrowRight size={18} />
           </Link>
+          {pack && (
+            <div className="hero-price">
+              <PriceTag price={pack.pricePerDay} compact />
+              {HOLIDAY_PROMOTION.enabled && (
+                <span className="small-offer">
+                  C’est cadeau : −{HOLIDAY_PROMOTION.discountPercent} % pour les
+                  fêtes.
+                </span>
+              )}
+            </div>
+          )}
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {categories.map((cat) => (
-            <CategoryCard key={cat.id} category={cat} articleCount={categoryCountMap[cat.id] ?? 0} />
+        <div className="hero-visual">
+          <span className="hero-sticker">
+            <Sparkles size={15} /> La soirée est dans la boîte.
+          </span>
+          <Image
+            src="/images/pack-hero.webp"
+            alt="Illustration 3D du pack Lokki avec Monopoly, Ludo personnalisé, Uno, Jenga et Scrabble dans une boîte bleue"
+            width={1254}
+            height={1254}
+            sizes="(max-width: 760px) 100vw, 55vw"
+            preload
+            className="hero-image"
+          />
+          <span className="visual-note">
+            <span>✦</span> De grandes revanches en perspective.
+          </span>
+        </div>
+      </section>
+
+      <div className="shell occasion-strip">
+        <span>TOUTES LES OCCASIONS SONT BONNES.</span>
+        <div>
+          <span>Entre amis</span>
+          <i /> <span>En famille</span>
+          <i />
+          <span>Pour les fêtes</span>
+          <i />
+          <span>Juste pour le plaisir</span>
+        </div>
+      </div>
+
+      <section id="les-jeux" className="shell section-space">
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">LE CASTING DE VOTRE SOIRÉE</span>
+            <h2>
+              Cinq classiques.
+              <br />
+              <span className="blue-text">Zéro soirée ordinaire.</span>
+            </h2>
+          </div>
+          <p>
+            Pas besoin de choisir votre préféré.
+            <br />
+            <strong>Ils sont tous dans le pack.</strong>
+          </p>
+        </div>
+        <GameGrid />
+        <p className="illustration-note">
+          Visuels d’illustration. L’apparence des jeux et du rangement peut
+          varier.
+        </p>
+      </section>
+
+      <section id="notre-pack" className="shell">
+        {pack ? (
+          <div className="featured-pack">
+            <div className="pack-intro">
+              <span className="eyebrow">
+                <PackageOpen size={15} /> UN PACK. TOUT LE MONDE JOUE.
+              </span>
+              <h2>
+                Le pack des
+                <br />
+                bons moments<span className="blue-text">.</span>
+              </h2>
+              <p>
+                Du premier « à toi de jouer » à la dernière revanche.
+                <br />
+                Les {pack.gameIds.length} jeux vous accompagnent pendant 24 h.
+              </p>
+              <ul className="pack-checklist">
+                {GAMES.filter((game) => pack.gameIds.includes(game.id)).map(
+                  (game) => (
+                    <li key={game.id}>
+                      <Check size={16} />
+                      {game.name}
+                    </li>
+                  ),
+                )}
+              </ul>
+            </div>
+            <div className="pack-pricing">
+              {HOLIDAY_PROMOTION.enabled && (
+                <span className="promo-label">
+                  <Gift size={15} /> OFFRE DE FÊTES · −
+                  {HOLIDAY_PROMOTION.discountPercent} %
+                </span>
+              )}
+              <PriceTag price={pack.pricePerDay} />
+              <p className="free-delivery">
+                <Truck size={17} /> Livraison gratuite
+              </p>
+              <Link href={packHref} className="button button-primary">
+                C’est parti, je réserve <ArrowRight size={18} />
+              </Link>
+              <p className="pricing-note">
+                Une demande simple sur WhatsApp.
+                <br />
+                Disponibilité confirmée par notre équipe.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="empty-state">
+            <PackageOpen size={42} />
+            <h2>Les packs font une pause.</h2>
+            <p>Revenez bientôt pour préparer votre prochaine soirée jeux.</p>
+          </div>
+        )}
+      </section>
+
+      <section
+        id="comment-ca-marche"
+        className="shell section-space how-section"
+      >
+        <div className="section-heading">
+          <div>
+            <span className="eyebrow">LA SEULE RÈGLE : PROFITER</span>
+            <h2>
+              Simple comme <span className="blue-text">1, 2, 3.</span>
+            </h2>
+          </div>
+          <p>
+            Moins d’organisation.
+            <br />
+            Plus de temps pour jouer.
+          </p>
+        </div>
+        <div className="steps-grid">
+          {[
+            {
+              number: "01",
+              icon: CalendarDays,
+              title: "Choisissez votre moment",
+              copy: "Un jour, une heure, et votre pack. Les 24 h commencent à la livraison.",
+              color: "blue",
+            },
+            {
+              number: "02",
+              icon: MessageCircle,
+              title: "On se dit tout sur WhatsApp",
+              copy: "Envoyez votre demande préremplie. Notre équipe confirme la disponibilité et la livraison.",
+              color: "mint",
+            },
+            {
+              number: "03",
+              icon: Smile,
+              title: "Ouvrez. Jouez. Recommencez.",
+              copy: "On vous livre gratuitement. Profitez des cinq jeux, puis restituez le pack selon les modalités convenues.",
+              color: "peach",
+            },
+          ].map((step) => (
+            <article
+              className={`step-card step-${step.color}`}
+              key={step.number}
+            >
+              <div className="step-top">
+                <span className="step-icon">
+                  <step.icon size={26} />
+                </span>
+                <span className="step-number">{step.number}</span>
+              </div>
+              <h3>{step.title}</h3>
+              <p>{step.copy}</p>
+            </article>
           ))}
         </div>
       </section>
 
-      {/* Articles populaires */}
-      {popularArticles.length > 0 && (
-        <section className="max-w-6xl mx-auto px-4 pb-16">
-          <div className="flex items-end justify-between mb-6">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                <Star size={20} className="text-amber-400" fill="currentColor" />
-                Articles populaires
-              </h2>
-              <p className="text-gray-500 text-sm mt-1">Les plus demandés</p>
-            </div>
-            <Link href="/catalogue" className="text-indigo-600 text-sm font-medium hover:underline flex items-center gap-1">
-              Tout voir <ArrowRight size={14} />
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {popularArticles.map((article, i) => (
-              <ArticleCard key={article.id} article={article} priority={i === 0} />
-            ))}
-          </div>
-        </section>
-      )}
-
-      {/* CTA */}
-      <section className="bg-emerald-50 border-y border-emerald-100">
-        <div className="max-w-6xl mx-auto px-4 py-12 flex flex-col sm:flex-row items-center gap-6 justify-between">
-          <div>
-            <h3 className="text-xl font-bold text-gray-900">Prêt à louer ?</h3>
-            <p className="text-gray-600 mt-1 text-sm">
-              Ajoutez vos articles au panier et finalisez votre demande en 30 secondes via WhatsApp.
-            </p>
-          </div>
-          <Link href="/catalogue" className="shrink-0 bg-emerald-600 text-white font-semibold px-6 py-3 rounded-xl hover:bg-emerald-700 transition-colors flex items-center gap-2">
-            Commencer <ArrowRight size={16} />
-          </Link>
+      <section className="shell faq-section">
+        <div>
+          <span className="eyebrow">AVANT DE LANCER LES DÉS</span>
+          <h2>
+            Les petites
+            <br />
+            questions.
+          </h2>
+        </div>
+        <div className="faq-list">
+          {[
+            [
+              "Les cinq jeux sont-ils vraiment inclus ?",
+              "Oui ! Monopoly, Ludo personnalisé, Uno, Jenga et Scrabble sont réunis dans chaque pack. Les jeux ne se louent pas séparément.",
+            ],
+            [
+              "Combien coûte une location de 24 h ?",
+              `Le tarif habituel est de ${formatPrice(RENTAL_OFFER.pricePerDay)} par pack pour 24 h.${HOLIDAY_PROMOTION.enabled ? ` Pendant les fêtes, la réduction de ${HOLIDAY_PROMOTION.discountPercent} % est appliquée automatiquement : ${formatPrice(calcTotal(RENTAL_OFFER.pricePerDay, 1))}.` : ""} La livraison est gratuite.`,
+            ],
+            [
+              "Quand commencent les 24 h ?",
+              "À l’heure de livraison convenue avec notre équipe. Par exemple, un pack livré samedi à 18 h est à restituer dimanche à 18 h pour une location de 24 h.",
+            ],
+            [
+              "Comment se passent la livraison et le retour ?",
+              "Indiquez votre quartier et votre adresse dans la demande. Notre équipe confirme le lieu et l’heure sur WhatsApp. La livraison est gratuite ; les modalités de restitution sont convenues ensemble.",
+            ],
+          ].map(([question, answer]) => (
+            <details key={question}>
+              <summary>
+                {question}
+                <span aria-hidden="true">+</span>
+              </summary>
+              <p>{answer}</p>
+            </details>
+          ))}
         </div>
       </section>
-    </div>
+      <section className="shell last-cta">
+        <div>
+          <span className="eyebrow">VOTRE PROCHAINE SOIRÉE COMMENCE ICI</span>
+          <h2>On fait une partie ?</h2>
+          <p>Les meilleurs souvenirs n’ont pas besoin de Wi-Fi.</p>
+        </div>
+        <Link className="button button-dark" href={packHref}>
+          Je prends le pack <ArrowRight size={18} />
+        </Link>
+      </section>
+    </>
   );
 }

@@ -2,14 +2,22 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, Star } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  ToggleLeft,
+  ToggleRight,
+  Star,
+} from "lucide-react";
 import { useArticleStore } from "@/lib/store";
 import { Article } from "@/lib/types";
 import { formatPrice } from "@/lib/utils";
 import ArticleFormModal from "@/components/admin/ArticleFormModal";
 
 export default function AdminArticlesPage() {
-  const { articles, categories, deleteArticle, toggleStatus } = useArticleStore();
+  const { articles, categories, deleteArticle, toggleStatus } =
+    useArticleStore();
   const [modalOpen, setModalOpen] = useState(false);
   const [editTarget, setEditTarget] = useState<Article | null>(null);
 
@@ -24,13 +32,13 @@ export default function AdminArticlesPage() {
   }
 
   function handleDelete(id: string) {
-    if (globalThis.confirm("Supprimer cet article ?")) deleteArticle(id);
+    if (globalThis.confirm("Supprimer ce pack ?")) deleteArticle(id);
   }
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Articles</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Packs de jeux</h1>
         <button
           onClick={handleAdd}
           className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors"
@@ -49,17 +57,31 @@ export default function AdminArticlesPage() {
             >
               <div className="relative w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shrink-0">
                 {article.images[0] ? (
-                  <Image src={article.images[0]} alt={article.name} fill className="object-cover" sizes="64px" />
+                  <Image
+                    src={article.images[0]}
+                    alt={article.name}
+                    fill
+                    className="object-cover"
+                    sizes="64px"
+                  />
                 ) : (
-                  <div className="w-full h-full flex items-center justify-center text-xl">📦</div>
+                  <div className="w-full h-full flex items-center justify-center text-xl">
+                    📦
+                  </div>
                 )}
               </div>
 
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-semibold text-gray-900 truncate">{article.name}</span>
+                  <span className="font-semibold text-gray-900 truncate">
+                    {article.name}
+                  </span>
                   {article.isPopular && (
-                    <Star size={13} className="text-amber-400 shrink-0" fill="currentColor" />
+                    <Star
+                      size={13}
+                      className="text-amber-400 shrink-0"
+                      fill="currentColor"
+                    />
                   )}
                   <span
                     className={`text-xs px-2 py-0.5 rounded-full font-medium shrink-0 ${
@@ -74,7 +96,7 @@ export default function AdminArticlesPage() {
                 <div className="text-sm text-gray-500 mt-0.5 flex items-center gap-2">
                   <span>{cat ? `${cat.icon} ${cat.name}` : "—"}</span>
                   <span>·</span>
-                  <span>{formatPrice(article.pricePerDay)} / jour</span>
+                  <span>{formatPrice(article.pricePerDay)} / 24 h</span>
                 </div>
               </div>
 

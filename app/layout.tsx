@@ -1,32 +1,63 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import Link from "next/link";
+import { Dice5, MapPin, ArrowUpRight } from "lucide-react";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import { ADMIN_WHATSAPP } from "@/lib/data";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
+const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "StuffRental – Location d'articles",
-  description: "Louez des articles pour vos loisirs et événements : PS5, sono, tente, drone et plus encore.",
+  title: "Lokki — Des jeux, des proches, de bons moments",
+  description:
+    "Louez un pack de 5 jeux : Monopoly, Ludo personnalisé, Uno, Jenga et Scrabble. 7 000 F CFA les 24 h, livraison gratuite. Réservez simplement sur WhatsApp.",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+}: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="fr" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-gray-50">
+    <html lang="fr" className={`${inter.variable} antialiased`}>
+      <body>
+        <a href="#main-content" className="skip-link">
+          Aller au contenu
+        </a>
         <Navbar />
-        <main className="flex-1">{children}</main>
-        <footer className="border-t border-gray-100 bg-white mt-16">
-          <div className="max-w-6xl mx-auto px-4 py-8 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-gray-500">© 2026 StuffRental. Tous droits réservés.</p>
-            <p className="text-sm text-gray-400">Location d&apos;articles simple et rapide</p>
+        <main id="main-content">{children}</main>
+        <footer className="site-footer">
+          <div className="shell footer-top">
+            <div>
+              <Link href="/" className="brand">
+                <Dice5 size={27} strokeWidth={2.5} />
+                <span>
+                  lokki<span className="brand-dot">.</span>
+                </span>
+              </Link>
+              <p>
+                Déconnectez les écrans.
+                <br />
+                Reconnectez les gens.
+              </p>
+            </div>
+            <div className="footer-links">
+              <Link href="/catalogue">Louer un pack</Link>
+              <Link href="/#comment-ca-marche">Comment ça marche</Link>
+              <a
+                href={`https://wa.me/${ADMIN_WHATSAPP.replace(/\D/g, "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                On en parle ? <ArrowUpRight size={14} />
+              </a>
+            </div>
+            <span className="footer-location">
+              <MapPin size={15} /> Du fun, depuis Lomé.
+            </span>
+          </div>
+          <div className="shell footer-bottom">
+            <span>© {new Date().getFullYear()} Lokki</span>
+            <span>La vie est plus belle autour d’un jeu.</span>
           </div>
         </footer>
       </body>

@@ -4,12 +4,16 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutDashboard, Package, FolderOpen, ArrowLeft } from "lucide-react";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
 
   const links = [
     { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/admin/articles", label: "Articles", icon: Package },
+    { href: "/admin/articles", label: "Packs de jeux", icon: Package },
     { href: "/admin/categories", label: "Catégories", icon: FolderOpen },
   ];
 
@@ -18,10 +22,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Admin top bar */}
       <div className="bg-indigo-900 text-white px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="font-bold text-sm">StuffRental Admin</span>
-          <span className="bg-indigo-700 text-indigo-200 text-xs px-2 py-0.5 rounded-full">Espace admin</span>
+          <span className="font-bold text-sm">Lokki Admin</span>
+          <span className="bg-indigo-700 text-indigo-200 text-xs px-2 py-0.5 rounded-full">
+            Espace admin
+          </span>
         </div>
-        <Link href="/" className="text-indigo-300 hover:text-white text-xs flex items-center gap-1">
+        <Link
+          href="/"
+          className="text-indigo-300 hover:text-white text-xs flex items-center gap-1"
+        >
           <ArrowLeft size={12} /> Site public
         </Link>
       </div>

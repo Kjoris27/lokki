@@ -3,10 +3,20 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
-import { LayoutDashboard, Package, FolderOpen, ArrowLeft, LogOut } from "lucide-react";
+import {
+  LayoutDashboard,
+  Package,
+  FolderOpen,
+  ArrowLeft,
+  LogOut,
+} from "lucide-react";
 import { useAuthStore } from "@/lib/auth";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const { isAuthenticated, logout } = useAuthStore();
@@ -29,8 +39,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
   const links = [
     { href: "/full-management", label: "Dashboard", icon: LayoutDashboard },
-    { href: "/full-management/articles", label: "Articles", icon: Package },
-    { href: "/full-management/categories", label: "Catégories", icon: FolderOpen },
+    {
+      href: "/full-management/articles",
+      label: "Packs de jeux",
+      icon: Package,
+    },
+    {
+      href: "/full-management/categories",
+      label: "Catégories",
+      icon: FolderOpen,
+    },
   ];
 
   function handleLogout() {
@@ -43,11 +61,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Admin top bar */}
       <div className="bg-indigo-900 text-white px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <span className="font-bold text-sm">StuffRental Admin</span>
-          <span className="bg-indigo-700 text-indigo-200 text-xs px-2 py-0.5 rounded-full">Espace admin</span>
+          <span className="font-bold text-sm">Lokki Admin</span>
+          <span className="bg-indigo-700 text-indigo-200 text-xs px-2 py-0.5 rounded-full">
+            Espace admin
+          </span>
         </div>
         <div className="flex items-center gap-4">
-          <Link href="/" className="text-indigo-300 hover:text-white text-xs flex items-center gap-1">
+          <Link
+            href="/"
+            className="text-indigo-300 hover:text-white text-xs flex items-center gap-1"
+          >
             <ArrowLeft size={12} /> Site public
           </Link>
           <button
